@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from collections import OrderedDict
 
 import six
 from django import forms
 
 from dynamic_forms.formfields import formfield_registry
-
+import dynamic_forms
 
 class MultiSelectFormField(forms.MultipleChoiceField):
     # http://djangosnippets.org/snippets/2753/
@@ -33,7 +32,7 @@ class MultiSelectFormField(forms.MultipleChoiceField):
 class FormModelForm(forms.Form):
 
     def __init__(self, model, *args, **kwargs):
-        self.model = model
+        self.model = dynamic_forms.models.FormModel.objects.get(id=1)
         super(FormModelForm, self).__init__(*args, **kwargs)
         self.model_fields = OrderedDict()
         for field in self.model.fields.all():

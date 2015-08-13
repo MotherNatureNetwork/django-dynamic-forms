@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView, FormView, TemplateView
+from django.http import HttpResponse, HttpResponseRedirect
 
 from dynamic_forms.actions import action_registry
 from dynamic_forms.forms import FormModelForm
-from dynamic_forms.models import FormModelData
+from dynamic_forms.models import FormModelData, FormModel
 from dynamic_forms.utils import is_old_style_action
 
 
@@ -17,7 +18,7 @@ class DynamicFormView(FormView):
     form_class = FormModelForm
 
     def dispatch(self, request, *args, **kwargs):
-        self.form_model = self.kwargs.pop('model')
+        self.form_model = FormModel.objects.get(id=1)
         return super(DynamicFormView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -25,7 +26,6 @@ class DynamicFormView(FormView):
         context.update({
             'model': self.form_model,
             'name': self.form_model.name,
-            'submit_url': self.form_model.submit_url,
         })
         return context
 
@@ -39,13 +39,7 @@ class DynamicFormView(FormView):
         If the ``dynamic_form_store_database`` action is active for the current
         form, include the ``display_key`` for the newly created data set.
         """
-        url = self.form_model.success_url
-        if self.form_model.allow_display:
-            store_key = 'dynamic_forms.actions.dynamic_form_store_database'
-            data = self.action_results.get(store_key, None)
-            if data is not None:
-                url += '?display_key=%s' % data.display_key
-        return url
+        return self.request.META.get('HTTP_REFERER','/')
 
     def get_template_names(self):
         return self.form_model.form_template
@@ -134,5 +128,29 @@ class DynamicDataSetDetailView(DynamicDataMixin, DetailView):
 
     model = FormModelData
     template_name = 'dynamic_forms/data_set.html'
+
+
+def form_handler(request):
+    if request.method == 'POST':
+        form = FormModelForm(request.POST)
+        hmapped_data = form.get_mapped_data()
+        value = json.dumps(mapped_data, cls=DjangoJSONEncoder)
+        data = FormModelData.objects.create(form=form_model, value=value)
+        return HttpResponse(data)
+    return HttpResponse('YO')
+
+def get_form(request, form_id=0):
+    import ipdb; ipdb.set_trace()
+    if request.method == 'GET':
+        try:
+            form_model = FormModel.objects.get(id=form_id)
+        except:
+            raise Http404
+        kwargs = {'model': form_model}
+        viewfunc = DynamicFormView.as_view(model=form_model)
+        new_resp = viewfunc(request, model=form_model)
+        return new_resp.render()
+    raise Http404
+
 
 data_set_detail = DynamicDataSetDetailView.as_view()
