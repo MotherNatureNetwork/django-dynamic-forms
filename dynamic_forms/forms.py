@@ -6,6 +6,7 @@ import six
 from django import forms
 
 from dynamic_forms.formfields import formfield_registry
+from django.forms.fields import BooleanField
 import dynamic_forms
 
 class MultiSelectFormField(forms.MultipleChoiceField):
@@ -38,6 +39,9 @@ class FormModelForm(forms.Form):
         for field in self.model.fields.all():
             self.model_fields[field.name] = field
             field.generate_form_field(self)
+        for field_name, field in self.fields.items():
+            if not type(field) is BooleanField:
+                field.widget.attrs['class'] = 'form-control'
 
     def get_mapped_data(self, exclude_missing=False):
         """

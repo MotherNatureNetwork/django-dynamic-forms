@@ -1,6 +1,6 @@
 {% load i18n %}
-<h2>{{ name }}</h2>
-<form method="post" action="/dynamic_forms/forms/">
+<form class="dynamic-form" method="post" action="/dynamic_forms/forms/">
+    <h2>{{ name }}</h2>
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">{% trans "Submit" %}</button>

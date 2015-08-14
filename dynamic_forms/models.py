@@ -33,6 +33,7 @@ class FormModel(models.Model):
             'will be given a unique URL to recall the data.'))
     recipient_email = models.EmailField(_('Recipient email'), blank=True,
         null=True, help_text=_('Email address to send form data.'))
+    display = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['name']
@@ -49,20 +50,6 @@ class FormModel(models.Model):
         is the key and their label is the value.
         """
         return OrderedDict(self.fields.values_list('name', 'label').all())
-
-    def save(self, *args, **kwargs):
-        """
-        Makes sure that the ``submit_url`` and -- if defined the
-        ``success_url`` -- end with a forward slash (``'/'``).
-        """
-        if not self.submit_url.endswith('/'):
-            self.submit_url = self.submit_url + '/'
-        if self.success_url:
-            if not self.success_url.endswith('/'):
-                self.success_url = self.success_url + '/'
-        else:
-            self.success_url = self.submit_url + 'done/'
-        super(FormModel, self).save(*args, **kwargs)
 
 
 @python_2_unicode_compatible

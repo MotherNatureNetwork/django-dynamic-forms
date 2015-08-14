@@ -18,7 +18,8 @@ class DynamicFormView(FormView):
     form_class = FormModelForm
 
     def dispatch(self, request, *args, **kwargs):
-        self.form_model = FormModel.objects.get(id=1)
+        form_id = int(kwargs['form_id'])
+        self.form_model = FormModel.objects.get(id=form_id)
         return super(DynamicFormView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -42,7 +43,9 @@ class DynamicFormView(FormView):
         return self.request.META.get('HTTP_REFERER','/')
 
     def get_template_names(self):
-        return self.form_model.form_template
+        if self.form_model.display:
+            return self.form_model.form_template
+        return 'dynamic_forms/blank.html'
 
     def form_valid(self, form):
         """
@@ -140,7 +143,6 @@ def form_handler(request):
     return HttpResponse('YO')
 
 def get_form(request, form_id=0):
-    import ipdb; ipdb.set_trace()
     if request.method == 'GET':
         try:
             form_model = FormModel.objects.get(id=form_id)
