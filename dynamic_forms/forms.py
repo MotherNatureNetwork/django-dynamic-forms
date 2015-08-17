@@ -33,7 +33,7 @@ class MultiSelectFormField(forms.MultipleChoiceField):
 class FormModelForm(forms.Form):
 
     def __init__(self, model, *args, **kwargs):
-        self.model = dynamic_forms.models.FormModel.objects.get(id=1)
+        self.model = model
         super(FormModelForm, self).__init__(*args, **kwargs)
         self.model_fields = OrderedDict()
         for field in self.model.fields.all():

@@ -19,11 +19,14 @@ def form_tag(body):
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {     
                     $('#form-insertion').html(xhr.responseText)
+                    $("#dynamic-form").ajaxForm({url: '/dynamic_forms/forms/%s/', type: 'post', success:    function() { 
+                        alert('Thanks for your submission!'); 
+                    }})
                 }   
             };      
             xhr.open('GET', '/dynamic_forms/forms/%s/');
             xhr.send();
             </script>
-        ''' % form_id
+        ''' % (form_id, form_id)
         body = body.replace(body[start_index-1:end_index+1], replace_string)
     return body
