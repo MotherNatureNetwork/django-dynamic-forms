@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import copy
 import re
 from importlib import import_module
+from django import forms
+
 
 import six
 from django import forms
@@ -280,3 +282,15 @@ class TimeField(BaseDynamicFormField):
 
     class Meta:
         localize = [bool, True, forms.NullBooleanField]
+
+@dynamic_form_field
+class StartGroupField(BaseDynamicFormField):
+
+    cls = 'dynamic_forms.fields.StartGroupField'
+    display_label = _('StartGroup')
+
+@dynamic_form_field
+class EndGroupField(BaseDynamicFormField):
+
+    cls = 'dynamic_forms.fields.EndGroupField'
+    display_label = _('EndGroup')

@@ -33,7 +33,7 @@ class FormModel(models.Model):
             'will be given a unique URL to recall the data.'))
     recipient_email = models.EmailField(_('Recipient email'), blank=True,
         null=True, help_text=_('Email address to send form data.'))
-    display = models.BooleanField(default=True)
+    display = models.BooleanField(default=True, help_text='Allow form to be viewed.')
 
     class Meta:
         ordering = ['name']

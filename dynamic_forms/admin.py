@@ -158,7 +158,7 @@ class AdminFormFieldInlineForm(forms.ModelForm):
 
 
 class FormFieldModelInlineAdmin(SortableStackedInline):
-    extra = 3
+    extra = 0
     form = AdminFormFieldInlineForm
     list_display = ('field_type', 'name', 'label')
     model = FormFieldModel

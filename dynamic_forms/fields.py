@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.forms import CheckboxSelectMultiple
 from django.utils.text import capfirst
+from django import forms
 
 from dynamic_forms.forms import MultiSelectFormField
 
@@ -95,3 +96,11 @@ class TextMultiSelectField(six.with_metaclass(models.SubfieldBase,
 
     def get_internal_type(self):
         return "TextField"
+
+class StartGroupField(forms.CharField):
+    def clean(self, value):
+        return value
+
+class EndGroupField(forms.CharField):
+    def clean(self, value):
+        return "END"

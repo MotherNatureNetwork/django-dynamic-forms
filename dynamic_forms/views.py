@@ -19,7 +19,10 @@ class DynamicFormView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         form_id = int(kwargs['form_id'])
-        self.form_model = FormModel.objects.get(id=form_id)
+        try:
+            self.form_model = FormModel.objects.get(id=form_id)
+        except:
+            return HttpResponse('')
         return super(DynamicFormView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
