@@ -1,5 +1,5 @@
 {% load i18n %}
-<form id="dynamic-form" class="dynamic-form" method="post" action="/dynamic_forms/forms/">
+<form id="dynamic-form" class="dynamic-form" method="post" action="/dynamic_forms/forms/{{ form.get_id }}/">
     <h2>{{ name }}</h2>
     {% csrf_token %}
     {{ form.as_p }}

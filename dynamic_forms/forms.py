@@ -152,3 +152,6 @@ class FormModelForm(forms.Form):
                 # hidden fields.
                 output.append(str_hidden)
         return mark_safe('\n'.join(output))
+
+    def get_id(self):
+        return self.model.id
