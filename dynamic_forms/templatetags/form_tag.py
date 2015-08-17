@@ -1,4 +1,5 @@
 from django import template
+from django.utils.safestring import mark_safe
 register = template.Library()
 
 
@@ -14,19 +15,22 @@ def form_tag(body):
         form_id = body[start_id_index:end_index]
         replace_string = '''
             <div id="form-insertion"></div>
+            <div id="form-thanks" style="display: none;">Thanks for your submission!</div>
             <script>
             var xhr = new XMLHttpRequest(); 
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {     
-                    $('#form-insertion').html(xhr.responseText)
+                    $('#form-insertion').html(xhr.responseText);
                     $("#dynamic-form").ajaxForm({url: '/dynamic_forms/forms/%s/', type: 'post', success:    function() { 
-                        alert('Thanks for your submission!'); 
-                    }})
+                        $('#form-insertion').html("");
+                        $('#form-thanks').css('display', 'block');
+                    }});
                 }   
             };      
             xhr.open('GET', '/dynamic_forms/forms/%s/');
             xhr.send();
             </script>
         ''' % (form_id, form_id)
-        body = body.replace(body[start_index-1:end_index+1], replace_string)
-    return body
+        safe = mark_safe(replace_string)
+        body = body.replace(body[start_index-1:end_index+1], safe)
+    return mark_safe(body)
