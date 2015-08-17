@@ -11,6 +11,7 @@ from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from suit.admin import SortableStackedInline
 
 from dynamic_forms.formfields import formfield_registry
 from dynamic_forms.models import FormFieldModel, FormModel, FormModelData
@@ -156,12 +157,13 @@ class AdminFormFieldInlineForm(forms.ModelForm):
             ))
 
 
-class FormFieldModelInlineAdmin(admin.StackedInline):
+class FormFieldModelInlineAdmin(SortableStackedInline):
     extra = 3
     form = AdminFormFieldInlineForm
     list_display = ('field_type', 'name', 'label')
     model = FormFieldModel
     prepopulated_fields = {"name": ("label",)}
+    sortable = 'position'
 
 
 class FormModelAdmin(admin.ModelAdmin):
