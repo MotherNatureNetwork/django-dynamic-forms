@@ -77,6 +77,8 @@ class FormModelForm(forms.Form):
         for name, field in self.fields.items():
             if type(field) is dynamic_forms.fields.StartGroupField:
                 output.append('<div class="form-group"><h3>%s</h3>' % field.label)
+                if field.help_text:
+                    output.append("<p>%s</p>" % force_text(field.help_text))
                 continue
             if type(field) is dynamic_forms.fields.EndGroupField:
                 output.append('</div>')
