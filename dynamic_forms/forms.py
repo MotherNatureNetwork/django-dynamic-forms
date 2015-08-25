@@ -47,6 +47,8 @@ class FormModelForm(forms.Form):
         for field_name, field in self.fields.items():
             if not type(field) is BooleanField:
                 field.widget.attrs['class'] = 'form-control'
+            if field.required:
+                field.widget.attrs['required'] = 'true'
 
     def get_mapped_data(self, exclude_missing=False):
         """
