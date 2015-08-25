@@ -16,6 +16,7 @@ def form_tag(body):
         replace_string = '''
             <div id="form-insertion"></div>
             <div id="form-thanks" style="display: none;">Thanks for your submission!</div>
+            <script src="https://static.talesofthecocktail.com/js/vendor/jquery.js"></script>
             <script>
             var xhr = new XMLHttpRequest(); 
             xhr.onreadystatechange = function () {
