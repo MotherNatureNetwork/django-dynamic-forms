@@ -207,7 +207,8 @@ class ChoiceField(BaseDynamicFormField):
 
     def construct(self, **kwargs):
         value = self.options.get('choices')[1]
-        choices = [(row, row) for row in value.splitlines() if row]
+        choices = [('', '---'),]
+        choices += [(row, row) for row in value.splitlines() if row]
         return super(ChoiceField, self).construct(choices=choices)
 
     def options_valid(self):
