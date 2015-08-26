@@ -18,18 +18,20 @@ def form_tag(body):
             <div id="form-thanks" style="display: none;">Thanks for your submission!</div>
             <script src="https://static.talesofthecocktail.com/js/vendor/jquery.js"></script>
             <script>
-            var xhr = new XMLHttpRequest(); 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {     
-                    $('#form-insertion').html(xhr.responseText);
-                    $("#dynamic-form").ajaxForm({url: '/dynamic_forms/forms/%s/', type: 'post', success:    function() { 
-                        $('#form-insertion').html("");
-                        $('#form-thanks').css('display', 'block');
-                    }});
-                }   
-            };      
-            xhr.open('GET', '/dynamic_forms/forms/%s/');
-            xhr.send();
+            $(window).on('load', function() {
+              var xhr = new XMLHttpRequest(); 
+              xhr.onreadystatechange = function () {
+                  if (xhr.readyState === 4) {     
+                      $('#form-insertion').html(xhr.responseText);
+                      $("#dynamic-form").ajaxForm({url: '/dynamic_forms/forms/%s/', type: 'post', success:    function() { 
+                          $('#form-insertion').html("");
+                          $('#form-thanks').css('display', 'block');
+                      }});
+                  }   
+              };      
+              xhr.open('GET', '/dynamic_forms/forms/%s/');
+              xhr.send();
+            });
             </script>
         ''' % (form_id, form_id)
         safe = mark_safe(replace_string)
