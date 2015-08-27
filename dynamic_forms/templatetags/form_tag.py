@@ -17,6 +17,7 @@ def form_tag(body):
             <div id="form-insertion"></div>
             <div id="form-thanks" style="display: none;">Thanks for your submission!</div>
             <script src="https://static.talesofthecocktail.com/js/vendor/jquery.js"></script>
+            <script src="https://static.talesofthecocktail.com/js/validation/jquery.validate.min.js"></script>
             <script>
             $(window).on('load', function() {
               var xhr = new XMLHttpRequest(); 
@@ -27,6 +28,7 @@ def form_tag(body):
                           $('#form-insertion').html("");
                           $('#form-thanks').css('display', 'block');
                       }});
+                      $('#dynamic-form').validate();
                   }   
               };      
               xhr.open('GET', '/dynamic_forms/forms/%s/');
