@@ -27,8 +27,8 @@ def form_tag(body):
                       $("#dynamic-form").ajaxForm({url: '/dynamic_forms/forms/%s/', type: 'post', success:    function() { 
                           $('#form-insertion').html("");
                           $('#form-thanks').css('display', 'block');
+                          $('#dynamic-form').validate();
                       }});
-                      $('#dynamic-form').validate();
                   }   
               };      
               xhr.open('GET', '/dynamic_forms/forms/%s/');
