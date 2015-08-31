@@ -6,10 +6,12 @@ import json
 import six
 from django import forms
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.forms.utils import flatatt
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from suit.admin import SortableStackedInline
 
@@ -170,15 +172,59 @@ class FormModelAdmin(admin.ModelAdmin):
     form = AdminFormModelForm
     inlines = (FormFieldModelInlineAdmin,)
     list_display = ('name', 'allow_display')
+    list_filter = ('name',)
     model = FormModel
 
 admin.site.register(FormModel, FormModelAdmin)
 
 
+class FormFilter(SimpleListFilter):
+    title = 'Selected Form'
+    parameter_name = 'form'
+
+    def lookups(self, request, model_admin):
+        forms = set([f for f in FormModel.objects.all()])
+        return [(f.id, f.name) for f in forms]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return FormModelData.objects.filter(form__id__exact=self.value())
+        else:
+            return queryset
+
+
 class FormModelDataAdmin(admin.ModelAdmin):
     fields = ('form', 'value', 'submitted', 'show_url_link')
-    list_display = ('form', 'pretty_value', 'submitted')
     model = FormModelData
     readonly_fields = ('submitted', 'show_url_link',)
+    list_filter = (FormFilter,)
+    actions_on_top = False
+    actions_on_bottom = True
+    date_hierarchy = 'submitted'
+
+    def get_list_display(self, request):
+        if not request.GET.get('form', None):
+            return ('form', 'submitted')
+        else:
+            list_display_tuple = ['form', 'submitted']
+            form_obj = FormModel.objects.get(pk=int(request.GET.get('form')))
+            self.form_obj = form_obj
+            fields = form_obj.fields.all()
+            for field in fields:
+                if field.field_type in ('dynamic_forms.formfields.StartGroupField',
+                                        'dynamic_forms.formfields.EndGroupField'):
+                    continue
+                field_slug = slugify(field.name).replace('-', '_')
+                list_display_tuple.append("get_form_data_value_for_%s" % field_slug)
+                self.add_form_value_display(field.label, field_slug)
+            return list_display_tuple
+
+    def add_form_value_display(self, label, name):
+        def inner_add_form_value_display(obj):
+            json_value = json.loads(obj.value)
+            return json_value[label]
+        inner_add_form_value_display.short_description = name
+        inner_add_form_value_display.name = name
+        setattr(self, "get_form_data_value_for_%s" % name, inner_add_form_value_display)
 
 admin.site.register(FormModelData, FormModelDataAdmin)
