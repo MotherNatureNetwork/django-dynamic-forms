@@ -58,11 +58,24 @@ def formmodel_action(label):
 @formmodel_action(_('Send via email'))
 def dynamic_form_send_email(form_model, form, request):
     mapped_data = form.get_mapped_data()
+    mapped_items = mapped_data.items()
+    field_labels = []
+    fields = form_model.fields.all()
+    for field in fields:
+        if field.field_type in ('dynamic_forms.formfields.StartGroupField',
+                                'dynamic_forms.formfields.EndGroupField'):
+            continue
+        field_labels.append(field.label)
+    items_list = []
+    for label in field_labels:
+        for item in mapped_items:
+            if item[0] == label:
+                items_list.append(item)
 
     subject = _('Form “%(formname)s” submitted') % {'formname': form_model}
     message = render_to_string('dynamic_forms/email.txt', {
         'form': form_model,
-        'data': sorted(mapped_data.items()),
+        'data': items_list,
     })
     from_email = settings.DEFAULT_FROM_EMAIL
     if form_model.recipient_email:
