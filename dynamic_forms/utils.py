@@ -61,6 +61,8 @@ def export_as_csv_action(description="Export selected form's data as a CSV file"
             json_value = json.loads(data.value)
             row_data = ["%s" % data.submitted.strftime("%Y-%m-%d %H:%M"),]
             for header in header_names:
+                if not header in json_value:
+                    continue
                 row_data.append(unicode(json_value[header]).encode("utf-8","replace"))
             writer.writerow(row_data)
         return response
