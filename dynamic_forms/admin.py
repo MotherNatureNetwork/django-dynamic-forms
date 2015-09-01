@@ -17,6 +17,7 @@ from suit.admin import SortableStackedInline
 
 from dynamic_forms.formfields import formfield_registry
 from dynamic_forms.models import FormFieldModel, FormModel, FormModelData
+from dynamic_forms.utils import export_as_csv_action
 
 
 class ReadOnlyWidget(forms.Widget):
@@ -174,6 +175,7 @@ class FormModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'allow_display')
     list_filter = ('name',)
     model = FormModel
+    actions = [export_as_csv_action("Export form submissions as CSV")]
 
 admin.site.register(FormModel, FormModelAdmin)
 
