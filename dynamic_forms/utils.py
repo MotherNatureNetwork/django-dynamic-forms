@@ -56,7 +56,7 @@ def export_as_csv_action(description="Export selected form's data as a CSV file"
 
         writer = csv.writer(response)
         if header_names:
-            writer.writerow(header_names)
+            writer.writerow(["Submitted",] + header_names)
         for data in form_data:
             json_value = json.loads(data.value)
             row_data = ["%s" % data.submitted.strftime("%Y-%m-%d %H:%M"),]
