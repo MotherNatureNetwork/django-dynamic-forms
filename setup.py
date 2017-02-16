@@ -13,7 +13,7 @@ def read(*parts):
 
 setup(
     name='django-dynamic-forms',
-    version='0.4.0.post2',
+    version='0.4.0.post3',
     description='django-dynamic-forms is a reusable Django application to create and configure forms through the admin.',
     long_description=read('README.rst'),
     author='Markus Holtermann',
@@ -23,6 +23,7 @@ setup(
     packages=[
         'dynamic_forms',
         'dynamic_forms.migrations',
+        'dynamic_forms.templatetags',
     ],
     package_data={
         'dynamic_forms': [
