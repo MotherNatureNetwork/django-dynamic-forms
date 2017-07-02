@@ -11,8 +11,7 @@ from django import forms
 from dynamic_forms.forms import MultiSelectFormField
 
 
-class TextMultiSelectField(six.with_metaclass(models.SubfieldBase,
-                                              models.TextField)):
+class TextMultiSelectField(models.TextField):
     # http://djangosnippets.org/snippets/2753/
 
     widget = CheckboxSelectMultiple
